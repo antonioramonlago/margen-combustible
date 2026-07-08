@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Margen Combustible</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="favicon.png">
+
+<style>
+
+body{
+    margin:0;
+    background:#f2f2f7;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+.contenedor{
+
+    max-width:420px;
+    margin:25px auto;
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 0 15px rgba(0,0,0,.15);
+
+}
+
+h2{
+
+    text-align:center;
+    color:#007AFF;
+
+}
+
+label{
+
+    font-weight:bold;
+    display:block;
+    margin-top:15px;
+
+}
+
+input{
+
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    font-size:18px;
+    border-radius:10px;
+    border:1px solid #ccc;
+
+}
+
+button{
+
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+
+}
+
+#calcular{
+
+    background:#007AFF;
+    color:white;
+
+}
+
+#borrar{
+
+    background:#777;
+    color:white;
+
+}
+
+.resultado{
+
+    margin-top:25px;
+    font-size:22px;
+    font-weight:bold;
+    color:#222;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+<div style="text-align:center;margin-bottom:15px;">
+    <img src="icon-512.png"
+         alt="E.S. Pedrón"
+         style="width:140px;height:auto;">
+</div>
+
+<h2>⛽ Margen Combustible</h2>
+
+<label>Precio compra (sin IVA)</label>
+<input id="compra" autocomplete="off">
+
+<label>Precio venta (con IVA)</label>
+<input id="venta" autocomplete="off">
+
+<label>IVA (%)</label>
+<input id="iva" value="21">
+
+<label>Transporte (€/l)</label>
+<input id="transporte" value="0,01035">
+
+<label>Bactericida (€/l)</label>
+<input id="bactericida" value="0,00942">
+
+<button id="calcular" onclick="calcular()">
+CALCULAR
+</button>
+
+<button id="borrar" onclick="borrar()">
+BORRAR
+</button>
+
+<div class="resultado">
+
+<div id="ventasiniva"></div>
+
+<div id="margen"></div>
+
+</div>
+
+</div>
+
+<script>
+window.onload=function(){
+
+    if(localStorage.getItem("iva"))
+        document.getElementById("iva").value=localStorage.getItem("iva");
+
+    if(localStorage.getItem("transporte"))
+        document.getElementById("transporte").value=localStorage.getItem("transporte");
+
+    if(localStorage.getItem("bactericida"))
+        document.getElementById("bactericida").value=localStorage.getItem("bactericida");
+
+    document.getElementById("compra").focus();
+
+}
+
+function numero(id){
+
+    return parseFloat(
+        document.getElementById(id).value.replace(",",".")
+    ) || 0;
+
+}
+
+function calcular(){
+
+    let compra=numero("compra");
+    let venta=numero("venta");
+    let iva=numero("iva");
+    let transporte=numero("transporte");
+    let bactericida=numero("bactericida");
+
+    localStorage.setItem("iva",document.getElementById("iva").value);
+    localStorage.setItem("transporte",document.getElementById("transporte").value);
+    localStorage.setItem("bactericida",document.getElementById("bactericida").value);
+
+    let ventaSinIVA=venta/(1+iva/100);
+
+    let margen=ventaSinIVA-compra-transporte-bactericida;
+
+    document.getElementById("ventasiniva").innerHTML=
+    "Venta sin IVA: <span style='color:#007AFF'>"+ventaSinIVA.toFixed(3)+"</span>";
+
+    document.getElementById("margen").innerHTML=
+    "Margen: <span style='color:green'>"+margen.toFixed(3)+" €/l</span>";
+
+}
+
+function borrar(){
+
+    document.getElementById("compra").value="";
+    document.getElementById("venta").value="";
+
+    document.getElementById("ventasiniva").innerHTML="";
+    document.getElementById("margen").innerHTML="";
+
+    document.getElementById("compra").focus();
+
+}
+
+document.getElementById("compra").addEventListener("input",calcular);
+document.getElementById("venta").addEventListener("input",calcular);
+document.getElementById("iva").addEventListener("input",calcular);
+document.getElementById("transporte").addEventListener("input",calcular);
+document.getElementById("bactericida").addEventListener("input",calcular);
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+    });
+}
+</script>
+</body>
+</html>
