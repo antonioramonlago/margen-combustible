@@ -124,8 +124,8 @@ button{
 <label>Transporte (€/l)</label>
 <input id="transporte" value="0,01035">
 
-<label>Bactericida (€/l)</label>
-<input id="bactericida" value="0,00942">
+<label>Aditivos (€/l)</label>
+<input id="aditivos" value="0,00942">
 
 <button id="calcular" onclick="calcular()">
 CALCULAR
@@ -154,9 +154,10 @@ window.onload=function(){
     if(localStorage.getItem("transporte"))
         document.getElementById("transporte").value=localStorage.getItem("transporte");
 
-    if(localStorage.getItem("bactericida"))
-        document.getElementById("bactericida").value=localStorage.getItem("bactericida");
-
+   if(localStorage.getItem("aditivos"))
+    document.getElementById("aditivos").value = localStorage.getItem("aditivos");
+else if(localStorage.getItem("bactericida"))
+    document.getElementById("aditivos").value = localStorage.getItem("bactericida");
     document.getElementById("compra").focus();
 
 }
@@ -175,15 +176,15 @@ function calcular(){
     let venta=numero("venta");
     let iva=numero("iva");
     let transporte=numero("transporte");
-    let bactericida=numero("bactericida");
+   let aditivos=numero("aditivos");
 
     localStorage.setItem("iva",document.getElementById("iva").value);
     localStorage.setItem("transporte",document.getElementById("transporte").value);
-    localStorage.setItem("bactericida",document.getElementById("bactericida").value);
+    localStorage.setItem("aditivos",document.getElementById("aditivos").value);
 
     let ventaSinIVA=venta/(1+iva/100);
 
-    let margen=ventaSinIVA-compra-transporte-bactericida;
+   let margen=ventaSinIVA-compra-transporte-aditivos;
 
     document.getElementById("ventasiniva").innerHTML=
     "Venta sin IVA: <span style='color:#007AFF'>"+ventaSinIVA.toFixed(3)+"</span>";
@@ -209,7 +210,7 @@ document.getElementById("compra").addEventListener("input",calcular);
 document.getElementById("venta").addEventListener("input",calcular);
 document.getElementById("iva").addEventListener("input",calcular);
 document.getElementById("transporte").addEventListener("input",calcular);
-document.getElementById("bactericida").addEventListener("input",calcular);
+document.getElementById("aditivos").addEventListener("input",calcular);
 
 </script>
 <script>
